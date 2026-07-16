@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Theme tokens for the Settlement Network console.
+ * Light mode: clean operations-room white/graphite.
+ * Dark mode: deep ink background — the primary mode for a 24/7 monitoring
+ * console — with a signal-cyan accent reserved for live/settlement state
+ * and an amber accent reserved for warnings.
+ */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 30% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 30% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 30% 11%;
+
+    --primary: 199 89% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 30% 11%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 199 89% 94%;
+    --accent-foreground: 199 89% 25%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 60% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 214 22% 90%;
+    --input: 214 22% 90%;
+    --ring: 199 89% 38%;
+
+    --sidebar-background: 222 30% 11%;
+    --sidebar-foreground: 210 20% 88%;
+    --sidebar-border: 222 25% 18%;
+    --sidebar-accent: 222 25% 16%;
+
+    --radius: 0.5rem;
+
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  .dark {
+    --background: 222 32% 7%;
+    --foreground: 210 20% 92%;
+
+    --card: 222 28% 10%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 222 28% 10%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 191 91% 55%;
+    --primary-foreground: 222 32% 7%;
+
+    --secondary: 222 25% 15%;
+    --secondary-foreground: 210 20% 92%;
+
+    --muted: 222 25% 15%;
+    --muted-foreground: 215 16% 60%;
+
+    --accent: 191 60% 16%;
+    --accent-foreground: 191 91% 70%;
+
+    --destructive: 0 63% 48%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 55% 42%;
+    --success-foreground: 222 32% 7%;
+
+    --border: 222 22% 18%;
+    --input: 222 22% 18%;
+    --ring: 191 91% 55%;
+
+    --sidebar-background: 222 35% 5%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-border: 222 25% 14%;
+    --sidebar-accent: 222 25% 12%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+}
