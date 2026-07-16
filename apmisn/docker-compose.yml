@@ -1,0 +1,88 @@
+version: "3.9"
+
+# Autonomous Multi-Region Payment & Identity Settlement Network
+# Local/dev orchestration: Postgres, Redis, FastAPI backend, Next.js frontend.
+# All service env vars are sourced from ./.env (see .env.example).
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: apmisn-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-apmisn_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-apmisn_password}
+      POSTGRES_DB: ${POSTGRES_DB:-apmisn_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - apmisn_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-apmisn_user} -d ${POSTGRES_DB:-apmisn_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - apmisn-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: apmisn-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - apmisn_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - apmisn-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: apmisn-backend
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_HOST: db
+      REDIS_HOST: redis
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    networks:
+      - apmisn-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: apmisn-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - apmisn-network
+
+networks:
+  apmisn-network:
+    driver: bridge
+
+volumes:
+  apmisn_postgres_data:
+  apmisn_redis_data:
